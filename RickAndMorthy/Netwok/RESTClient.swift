@@ -2,8 +2,10 @@
 //  RESTClient.swift
 //  RickAndMorthy
 //
-//  Created by Eric Rojas Pech on 02/12/23.
+//  Created by Alex Silva on 27/12/24.
 //
+
+import Foundation
 
 import Foundation
 
@@ -21,8 +23,8 @@ struct RESTClient<T: Codable> {
     
     typealias successHandler = ((T) -> Void)
     
-    func show(_ path: String, success: @escaping successHandler){
-        client.get(path: path) { data in
+    func show(_ path: String, queryParams: [String:String] = ["page":"1"], success: @escaping successHandler ){
+        client.get(path,queryParams: queryParams ) { data in
             guard let data = data else { return }
             
             do {
@@ -35,5 +37,4 @@ struct RESTClient<T: Codable> {
             }
         }
     }
-    
 }

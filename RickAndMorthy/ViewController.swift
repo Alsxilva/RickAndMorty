@@ -2,12 +2,15 @@
 //  ViewController.swift
 //  RickAndMorthy
 //
-//  Created by Eric Rojas Pech on 01/12/23.
+//  Created by Alex Silva on 27/12/24.
 //
 
 import UIKit
 
 class ViewController: UIViewController {
+    
+    var actualPage: Int = 1
+    var queryPage: [String: String] = ["page": "2"]
     
     let restClient = RESTClient<PaginatedResponse<Character>>(client: Client(baseUrl: "https://rickandmortyapi.com"))
     
@@ -21,14 +24,14 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //tableView.dataSource = self
+        tableView.prefetchDataSource = self
         tableView.dataSource = self
         restClient.show("/api/character/") { response in
             self.characters = response.results
         }
     }
 }
-
-
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -43,5 +46,21 @@ extension ViewController: UITableViewDataSource {
         cell.detailTextLabel?.text = characters?[indexPath.row].species
         
         return cell
+    }
+}
+
+extension ViewController: UITableViewDataSourcePrefetching {
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        guard let characters = characters else { return }
+        let loadParameter = indexPaths.contains { $0.row >= characters.count - 5 }
+        
+        if loadParameter {
+            restClient.show("/api/character/",queryParams: queryPage) { response in
+                self.characters?.append(contentsOf: response.results)
+            }
+            actualPage += 1
+            queryPage = ["page":"\(actualPage)"]
+        }
     }
 }
