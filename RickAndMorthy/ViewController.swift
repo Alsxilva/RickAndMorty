@@ -10,7 +10,7 @@ import UIKit
 class ViewController: UIViewController {
     
     var actualPage: Int = 1
-    var queryPage: [String: String] = ["page": "2"]
+    var nextPage: [String: String] = ["page": "2"]
     
     let restClient = RESTClient<PaginatedResponse<Character>>(client: Client(baseUrl: "https://rickandmortyapi.com"))
     
@@ -56,11 +56,11 @@ extension ViewController: UITableViewDataSourcePrefetching {
         let loadParameter = indexPaths.contains { $0.row >= characters.count - 5 }
         
         if loadParameter {
-            restClient.show("/api/character/",queryParams: queryPage) { response in
+            restClient.show("/api/character/",queryParams: nextPage) { response in
                 self.characters?.append(contentsOf: response.results)
             }
             actualPage += 1
-            queryPage = ["page":"\(actualPage)"]
+            nextPage = ["page":"\(actualPage)"]
         }
     }
 }
