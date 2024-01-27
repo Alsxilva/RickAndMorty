@@ -1,7 +1,7 @@
 import Foundation
 
 enum StatusCode: Int {
-    case unkown = 0
+    case unknow = 0
     case info
     case success
     case redirection
@@ -22,7 +22,7 @@ enum StatusCode: Int {
         case 500, 501, 502, 503, 504, 505, 506, 507, 510, 511:
             self = .serverError
         default:
-            self = .unkown
+            self = .unknow
         }
     }
 }
